@@ -34,6 +34,7 @@ Begge virker. Vælg den, du har lyst til.
 |---|---|---|
 | Ser ud som | Et program med vinduer og knapper | Et program med en chat (fanen **Code**) |
 | Login | Din Google-konto (gratis at starte) | Kræver Claude Pro eller højere (gratis-kontoen kan ikke bruge **Code**) |
+| Pris | Se [Googles prisside](https://one.google.com/about/google-ai-plans/) | Se [Anthropics prisside](https://claude.com/pricing) |
 | Anbefalet hvis | Du bruger Google til alt | Du allerede betaler for Claude |
 
 ## 2. Installér git
