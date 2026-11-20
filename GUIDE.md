@@ -33,8 +33,12 @@ Begge virker. Vælg den, du har lyst til.
 | | **Google Antigravity** | **Claude (appen)** |
 |---|---|---|
 | Ser ud som | Et program med vinduer og knapper | Et program med en chat (fanen **Code**) |
-| Login | Din Google-konto (gratis at starte) | Kræver Claude Pro eller højere (gratis-kontoen kan ikke bruge **Code**) |
-| Anbefalet hvis | Du bruger Google til alt | Du allerede betaler for Claude |
+| Login | Din Google-konto | Din Claude-konto |
+| Pris | Gratis plan med en ugentlig kvote. Mere med Google AI Pro/Ultra ([priser](https://antigravity.google/pricing)) | Kræver Claude Pro eller højere: gratis-kontoen kan ikke bruge **Code** ([priser](https://claude.com/pricing)) |
+| MCP (styrer huset direkte) | Ja | Ja |
+| Anbefalet hvis | Du bruger Google til alt, eller vil starte gratis | Du allerede betaler for Claude |
+
+*Tjekket 2026-11-20. Priser og kvoter ændrer sig, så se linkene for det aktuelle.*
 
 ## 2. Installér git
 
