@@ -12,13 +12,17 @@ rydde op og tage backup.
 | **Del 2: Agentens opgaver** | **AI'en.** Står kun i `GUIDE.md`, og du behøver ikke læse den. | ca. 45 min |
 | **Del 3: Klik-vejledninger** | **Dig**, når AI'en beder om det | et par min hver |
 
-Du skal aldrig selv skrive kommandoer. AI'en skriver dem, og du klikker og kopierer.
+Du skal næsten aldrig selv skrive kommandoer: kun 2-3 korte linjer, som du kopierer. Resten skriver
+AI'en, og du klikker og kopierer.
 
 > 🆘 **Sidder du fast?** Tag et skærmbillede, og spørg i en Home Assistant-gruppe, eller opret et issue på github.com/dkvand/ha.
 
 **Du skal bruge:**
 
-- Home Assistant, som du kan åbne i browseren
+- **Home Assistant OS**: det almindelige, fx på Home Assistant Green/Yellow, en Raspberry Pi eller en
+  virtuel maskine. Tjek: **Indstillinger → System → Reparationer → ⋮ → Systeminformation**. Står der
+  *Home Assistant OS* (eller *Supervised*) ved **Installationstype**, er du klar. Står der *Container*
+  eller *Core*, virker guiden ikke.
 - En computer (Mac, Windows eller Linux) på **samme netværk** som Home Assistant
 - En Google-konto
 
@@ -66,8 +70,11 @@ Git er et lille program, der husker alle ændringer, så AI'en kan fortryde sine
 
 ## 4. Lav en mappe, og læg `GUIDE.md` i den
 
-1. Lav en mappe, der hedder **`ha-config`**, i din hjemmemappe (der hvor *Dokumenter* og *Overførsler* ligger)
-2. Kopiér filen **`GUIDE.md`**, som du fik sammen med denne vejledning, ind i mappen. Navnet skal
+1. Åbn din hjemmemappe:
+   - **Windows:** Stifinder → klik i adresselinjen øverst → skriv `%USERPROFILE%` → Enter
+   - **Mac:** Finder → menuen **Gå** → **Hjem** (`Cmd + Shift + H`)
+2. Lav en ny mappe her, der hedder **`ha-config`**
+3. Kopiér filen **`GUIDE.md`**, som du fik sammen med denne vejledning, ind i mappen. Navnet skal
    være præcis `GUIDE.md`.
 
 ## 5. Start AI'en i mappen
@@ -105,14 +112,15 @@ den beder om det. Er du i tvivl, så spørg den: *"Hvad gør det?"*
 > 4. **Hemmeligheder** (tokens, passwords) skal aldrig stå i chatten. Brugeren indsætter dem i
 >    `~/.profile`, som du åbner for brugeren i en editor. Du må aldrig udskrive en værdi fra den.
 >    Test om en variabel er sat med `echo ${HA_TOKEN:+sat}`.
-> 5. Find selv ud af, om det er Mac, Windows (Git Bash) eller Linux, og tilpas kommandoerne.
+> 5. Find selv ud af, om det er Mac, Windows eller Linux, og tilpas kommandoerne. **Windows:** alle
+>    kommandoer i guiden er bash. Er din terminal PowerShell, så kør dem gennem Git Bash:
+>    `& 'C:\Program Files\Git\bin\bash.exe' -lc '<kommando>'`.
 > 6. Rør aldrig `.storage/` i Home Assistant. Genstart aldrig HA uden at spørge.
 
 ## 2.1 Find Home Assistant på netværket
 
 Prøv `curl -s -o /dev/null -w '%{http_code}' http://homeassistant.local:8123/` (forvent `200`).
-Virker navnet ikke, så bed brugeren om HA's IP-adresse (**Klik A**), og brug den i stedet for
-`homeassistant.local` i resten af guiden.
+Virker navnet ikke, så bed brugeren om HA's IP-adresse (**Klik A**), og brug den som `HA_HOST` i 2.2.
 
 ## 2.2 Lav nøglefilen `~/.profile`
 
@@ -124,9 +132,10 @@ blokken ikke allerede står der:
 # ===== Adgang til huset — HEMMELIG: aldrig i git, aldrig i en chat =====
 
 # Home Assistant
-export HA_URL="http://homeassistant.local:8123"
+export HA_HOST="homeassistant.local"          # eller IP-adressen fra Klik A
+export HA_URL="http://$HA_HOST:8123"
 export HA_TOKEN="INDSÆT_TOKEN_HER"
-ha_ssh() { ssh -i "$HOME/.ssh/ha" -o StrictHostKeyChecking=accept-new root@homeassistant.local "$@"; }
+ha_ssh() { ssh -i "$HOME/.ssh/ha" -o StrictHostKeyChecking=accept-new "root@$HA_HOST" "$@"; }
 
 # Andre adgange — én linje pr. tjeneste, efterhånden som de kommer
 # export MQTT_USER=""
@@ -136,6 +145,9 @@ ha_ssh() { ssh -i "$HOME/.ssh/ha" -o StrictHostKeyChecking=accept-new root@homea
 Kør `chmod 600 ~/.profile`. Åbn så filen i en editor, som brugeren kan bruge (Mac:
 `open -e ~/.profile`, Windows: `notepad "$(cygpath -w ~/.profile)"`, Linux: `xdg-open ~/.profile`),
 og bed brugeren følge **Klik B** (lav token og indsæt det).
+
+Fjern bagefter Windows-linjeskift og typografiske anførselstegn, som editoren kan have indsat:
+`perl -CSD -pi -e 's/\r$//; s/[\x{201C}\x{201D}]/"/g' ~/.profile`
 
 Test:
 ```bash
@@ -173,6 +185,9 @@ init_commands: []
 ```
 
 Test: `source ~/.profile && ha_ssh "ha core info"` skal vise version og status.
+
+Tag nu en fuld backup i HA, før noget bliver ændret (tager et par minutter):
+`ha_ssh "ha backups new --name foer-ai"`
 
 ## 2.4 Hent konfigurationen ned, og sæt git op
 
@@ -252,7 +267,7 @@ Bed først brugeren om **Klik D** (MCP i HA). Derefter:
   filen). Skriv den med et lille script, der læser `HA_TOKEN` fra miljøet:
   ```json
   { "mcpServers": { "homeassistant": { "type": "http",
-      "url": "http://homeassistant.local:8123/api/mcp",
+      "url": "<HA_URL>/api/mcp",
       "headers": { "Authorization": "Bearer <HA_TOKEN>" } } } }
   ```
   Bed brugeren om at lukke appen **helt** (Mac: `Cmd + Q`; Windows: højreklik på ikonet ved uret →
@@ -262,7 +277,7 @@ Bed først brugeren om **Klik D** (MCP i HA). Derefter:
   Skriv filen med et lille script, der læser `HA_TOKEN` fra miljøet, så tokenet aldrig står i chatten:
   ```json
   { "mcpServers": { "homeassistant": {
-      "serverUrl": "http://homeassistant.local:8123/api/mcp",
+      "serverUrl": "<HA_URL>/api/mcp",
       "headers": { "Authorization": "Bearer <HA_TOKEN>" } } } }
   ```
 
@@ -318,6 +333,7 @@ spring over.
    git commit -q -m "Auto: $(date '+%Y-%m-%d %H:%M')"
    git push -q origin main
    ```
+   Fjern bagefter Windows-linjeskift: `ha_ssh "sed -i 's/\r$//' /config/scripts/git-sync.sh"`.
 6. Tilføj i `/config/configuration.yaml` (under en eksisterende `shell_command:`, hvis den findes):
    ```yaml
    shell_command:
@@ -325,7 +341,8 @@ spring over.
    ```
    Kør `ha core check`. **Spørg brugeren**, og kør så `ha core restart` (en ny `shell_command`
    kræver en rigtig genstart).
-7. Automation. Læg den i `automations.yaml`, eller giv den til brugeren til **Klik H**:
+7. Automation. Læg den i `automations.yaml`, eller giv den til brugeren til **Klik H**. Til Klik H skal
+   `- ` foran `id:` væk, og hele blokken rykkes to mellemrum til venstre:
    ```yaml
    - id: git_sync_nat
      alias: "Git: gem konfigurationen"
@@ -378,6 +395,9 @@ solnedgang, hvis nogen er hjemme"*, *"Hvorfor kørte min automation i går ikke?
 2. **Indstillinger → System → Netværk**
 3. Under **IPv4** står et tal som `192.168.1.50`. Giv det til AI'en.
 
+> Bed din router om altid at give Home Assistant den samme adresse (i routerens app hedder det
+> *DHCP-reservation* eller *fast IP*). Ellers kan AI'en ikke finde Home Assistant, når adressen skifter.
+
 ## Klik B: Lav et token, og indsæt det
 
 AI'en har åbnet en fil for dig, hvor der står `INDSÆT_TOKEN_HER`.
@@ -397,10 +417,12 @@ AI'en har givet dig en tekstblok, der starter med `ssh:`.
 1. Klik på **dit navn** nederst til venstre → slå **Avanceret tilstand** til
 2. **Indstillinger → Apps** (hedder *Tilføjelsesprogrammer* i ældre versioner) → knappen nederst
    til højre (**Butik** / **Installér app**)
-3. Søg **Advanced SSH & Web Terminal** → klik på den → **Installér**. Vent.
+3. Søg **Advanced SSH & Web Terminal** (ikke den, der kun hedder *Terminal & SSH*) → klik på den →
+   **Installér**. Vent.
 4. Fanen **Konfiguration** → **⋮** øverst til højre → **Rediger i YAML** → slet alt i feltet →
    indsæt AI'ens tekstblok → **Gem**
-5. Rul ned til **Netværk**: skriv `22` i feltet → **Gem**
+5. Rul ned til **Netværk**: skriv `22` i feltet → **Gem**. Kan du ikke se feltet, så tryk
+   **Vis deaktiverede porte** først.
 6. Fanen **Info**: slå **Start ved opstart** og **Watchdog** til → **Start**. Skriv "færdig" til AI'en.
 
 ## Klik D: Slå MCP til i Home Assistant
@@ -496,6 +518,8 @@ Uden den nøgle kan en krypteret backup **ikke** gendannes. Heller ikke af Googl
 - **AI'en laver fejl.** Derfor tager den backup og bruger git. Bed den om at *"fortryde den sidste
   ændring"*, hvis noget går galt.
 - **`~/.profile` er nøglen til hele huset.** Send den aldrig til nogen, og læg den aldrig på nettet.
+  Tokenet står også i AI'ens MCP-indstillinger (`~/.claude.json` eller
+  `~/.gemini/config/mcp_config.json`).
 - **Mister du computeren:** slet tokenet i Home Assistant (Klik B, trin 1–2: skraldespanden ved
   tokenet), og skift de passwords, der står i `~/.profile`.
 - **Åbn aldrig Home Assistant mod internettet** for at få det her til at virke hjemmefra. Brug i stedet en VPN (fx WireGuard) eller Home Assistant Cloud (Nabu Casa).

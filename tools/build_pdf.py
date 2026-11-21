@@ -16,7 +16,8 @@ h3 { font-size: 11.5pt; margin-top: 14px; break-after: avoid; }
 h1:not(:first-of-type) { break-before: page; }
 code { font-family: 'DejaVu Sans Mono', monospace; font-size: 9pt; background: #eef2f6; padding: 1px 4px; border-radius: 3px; }
 pre { background: #eef2f6; border-left: 4px solid #0b4f6c; padding: 8px 10px; border-radius: 4px; white-space: pre-wrap; word-break: break-word; break-inside: avoid; }
-pre code { background: none; padding: 0; }
+p code, li code, td code { white-space: nowrap; }
+pre code { background: none; padding: 0; white-space: pre-wrap; }
 table { border-collapse: collapse; width: 100%; margin: 8px 0; break-inside: avoid; }
 th, td { border: 1px solid #c9d3dd; padding: 5px 8px; text-align: left; vertical-align: top; }
 th { background: #dde7ef; }

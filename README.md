@@ -9,6 +9,12 @@ koste penge, og det burde være frit tilgængeligt. Så her er det.
 
 ## Sådan bruger du det
 
+**Hent begge filer på én gang:** [ZIP under Releases](https://github.com/dkvand/ha/releases/latest)
+→ `ha-guide.zip` → pak den ud.
+
+Du skal have **Home Assistant OS** (det almindelige: Green/Yellow, Raspberry Pi eller en virtuel
+maskine). Kører du HA i Docker (*Container*), virker guiden ikke.
+
 | Fil | Til hvem |
 |---|---|
 | [`Vejledning-AI-hjaelper-Home-Assistant.pdf`](Vejledning-AI-hjaelper-Home-Assistant.pdf) | Dig. Læs den og følg Del 1 (~20 min). |
@@ -19,8 +25,8 @@ indsætter et token i en fil (aldrig i chatten).
 
 ## Før du går i gang
 
-- Giver du en AI fuld adgang, kan den også ødelægge noget. Guiden sætter backup og git op først,
-  så alt kan rulles tilbage — men læs afsnittet **"Godt at vide"**.
+- Giver du en AI fuld adgang, kan den også ødelægge noget. Guiden tager en fuld backup og en
+  git-kopi, før AI'en ændrer noget, så alt kan rulles tilbage — men læs afsnittet **"Godt at vide"**.
 - Åbn aldrig Home Assistant mod internettet for at få det her til at virke.
 - Guiden er testet i dele, ikke fra ende til anden på en helt ny installation. Finder du en fejl,
   så opret et [issue](https://github.com/dkvand/ha/issues) eller send en rettelse.
